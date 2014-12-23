@@ -2,7 +2,7 @@
 " mkdir -p ~/.vim/autoload ~/.vim/bundle; \
 " curl -so ~/.vim/autoload/pathogen.vim \
 "    https://raw.github.com/tpope/vim-pathogen/HEAD/autoload/pathogen.vim
-call pathogen#infect()
+"call pathogen#infect()
 
 syntax enable
 set background=dark

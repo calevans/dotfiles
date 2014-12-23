@@ -1,10 +1,8 @@
 # .bash_profile
-
-# Automated committing to git.
-alias pushit='git pull --rebase && phing test && git push'
-
+# https://github.com/calevans/dotfiles
+#
 # Make ls pretty.
-alias ls='ls -F --color'
+alias ls='ls -F -G '
 
 # Use vim whenever possible.
 export EDITOR=vim
