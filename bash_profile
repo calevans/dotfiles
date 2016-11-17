@@ -1,8 +1,15 @@
 # .bash_profile
+<<<<<<< HEAD
 # https://github.com/calevans/dotfiles
 #
 # Make ls pretty.
 alias ls='ls -F -G '
+=======
+
+# Warn before overwriting files.
+alias mv='mv -i'
+alias cp='cp -i'
+>>>>>>> 57eb351d7b39f66400b838628a454c25b0bdc27c
 
 # Use vim whenever possible.
 export EDITOR=vim

@@ -32,8 +32,13 @@ set smarttab
 
 set scrolloff=2
 set showmatch
+
 set textwidth=79
 set formatoptions=qrn1
+
+" Git commit messages should break at 72.
+autocmd Filetype gitcommit setlocal textwidth=72 formatoptions=cqt
+autocmd FileType gitcommit call setpos('.', [0, 1, 1, 0])
 
 set mouse=a
 
@@ -49,12 +54,16 @@ set ruler
 set backspace=indent,eol,start
 set laststatus=2
 set nu
+set foldmethod=indent
 
 set ignorecase
 set smartcase
 set incsearch
 set showmatch
 set hlsearch
+
+" Open vertical splits to the right by default
+set splitright
 
 let mapleader = ","
 let maplocalleader = ","
@@ -64,8 +73,9 @@ inoremap jj <ESC>
 
 autocmd BufRead,BufNewFile * set formatoptions-=cro
 
-" ,l to lint a PHP file.
+" ,l to lint a file.
 :autocmd FileType php noremap <leader>l :w!<CR>:!clear;/usr/local/bin/php -l %<CR>
+:autocmd FileType javascript noremap <leader>l :w!<CR>:!clear;/usr/local/bin/gjslint %<CR>
 
 " Leader-space to clear highlighted search.
 nnoremap <leader><space> :noh<cr>
@@ -91,6 +101,7 @@ autocmd Syntax * syn match ExtraWhitespace /\s\+$/
 " Highlight text past 80 characters.
 if exists('+colorcolumn')
     set colorcolumn=80
+    autocmd Filetype gitcommit setlocal colorcolumn=72
 endif
 
 " Make <ins> a nice paste format.
@@ -98,18 +109,17 @@ set pastetoggle=<ins>
 nnoremap <silent> <ins> :setlocal paste!<CR>i
 autocmd InsertLeave <buffer> se nopaste
 
-" Make F6 unit test the project.
-nnoremap <F6> :!phing test<CR>
-
-" Make F7 build the project
-nnoremap <F7> :!phing build<CR>
+" Make F6 unit test the project and F7 build it
+if filereadable('Makefile')
+    nnoremap <F6> :!make test<CR>
+    nnoremap <F7> :!make<CR>
+elseif filereadable('build.xml')
+    nnoremap <F6> :!phing test<CR>
+    nnoremap <F7> :!phing build<CR>
+endif
 
 " Prettier linewrap.
 set showbreak=↪
-
-" Leader-L to show invisible characters.
-nnoremap <leader>L :set list!<CR>
-set listchars=tab:▸\ ,eol:¬
 
 " Write as root.
 cnoremap w!! w !sudo tee % >/dev/null
@@ -120,7 +130,26 @@ nnoremap <c-k> <c-w>k
 nnoremap <c-h> <c-w>h
 nnoremap <c-l> <c-w>l
 
+" Allow opening a tag in a vertical split with CTRL-\
+map <C-\> :vsp <CR>:exec("tag ".expand("<cword>"))<CR>
+
 " Read your local vim stuff.
 if filereadable(glob("~/.vimrc.local"))
     source ~/.vimrc.local
 endif
+
+" Set up for Syntastic
+set statusline+=%#warningmsg#
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
+
+autocmd BufNewFile,BufRead *.json set ft=json
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 1
+let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_wq = 0
+let g:syntastic_scss_checkers = ['sassc']
+let g:syntastic_javascript_checkers = ['jshint', 'gjslint']
+let g:syntastic_json_checkers = ['jshint', 'jsonlint']
+let g:syntastic_twig_twiglint_exec = 'php'
+let g:syntastic_twig_twiglint_exe = 'php /usr/local/bin/twig-lint'
