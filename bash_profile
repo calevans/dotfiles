@@ -25,3 +25,4 @@ fi
 if [ -f ~/.bash_prompt ]; then
     source ~/.bash_prompt
 fi
+export PATH="~/.composer/vendor/bin:/usr/local/sbin:$PATH"
